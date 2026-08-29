@@ -1,0 +1,28 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Data (raw dataset not versioned)
+data/*
+!data/.gitkeep
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+
+# Secrets
+.env
+**/secrets.toml
+**/profiles.yml
+
+# Docker
+**/*.log
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
