@@ -26,3 +26,4 @@ data/*
 .vscode/
 .idea/
 .DS_Store
+terraform/.snowflake_keys/
