@@ -27,3 +27,7 @@ data/*
 .idea/
 .DS_Store
 terraform/.snowflake_keys/
+
+# Airflow runtime logs (generated automatically, keep folder structure only)
+airflow/logs/*
+!airflow/logs/.gitkeep
