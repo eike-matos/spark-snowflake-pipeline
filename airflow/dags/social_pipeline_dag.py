@@ -15,12 +15,12 @@ default_args = {
 
 with DAG(
     dag_id="social_pipeline_dag",
-    description="Cleans Sentiment140 with PySpark and loads it into Snowflake",
+    description="Cleans Sentiment140 with PySpark, loads it into Snowflake, and runs dbt models",
     default_args=default_args,
     schedule=None,
     start_date=datetime(2026, 1, 1),
     catchup=False,
-    tags=["spark", "snowflake"],
+    tags=["spark", "snowflake", "dbt"],
 ) as dag:
 
     clean_tweets = DockerOperator(
@@ -30,6 +30,7 @@ with DAG(
         auto_remove="success",
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
+        mount_tmp_dir=False,
         mounts=[
             Mount(
                 source=f"{HOST_PROJECT_DIR}/data",
@@ -77,4 +78,33 @@ with DAG(
         python_callable=load_to_snowflake,
     )
 
-    clean_tweets >> load_tweets
+    run_dbt_models = DockerOperator(
+        task_id="run_dbt_models",
+        image="dbt-transform-job",
+        api_version="auto",
+        auto_remove="success",
+        docker_url="unix://var/run/docker.sock",
+        network_mode="bridge",
+        mount_tmp_dir=False,
+        command="run",
+        mounts=[
+            Mount(
+                source=f"{HOST_PROJECT_DIR}/dbt_project",
+                target="/app",
+                type="bind",
+            ),
+            Mount(
+                source=f"{HOST_PROJECT_DIR}/dbt_project/profiles.yml",
+                target="/root/.dbt/profiles.yml",
+                type="bind",
+            ),
+            Mount(
+                source=f"{HOST_PROJECT_DIR}/terraform/.snowflake_keys",
+                target="/keys",
+                type="bind",
+                read_only=True,
+            ),
+        ],
+    )
+
+    clean_tweets >> load_tweets >> run_dbt_models
