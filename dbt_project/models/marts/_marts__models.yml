@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: mart_sentiment_by_day
+    description: "Daily tweet sentiment counts, aggregated from cleaned tweet data."
+    columns:
+      - name: tweet_date
+        description: "The date the tweets were posted."
+        tests:
+          - not_null
+      - name: sentiment
+        description: "Sentiment label: positive or negative."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['positive', 'negative']
+      - name: tweet_count
+        description: "Number of tweets with this sentiment on this date."
+
+  - name: mart_top_users
+    description: "Top 100 most active users, with their sentiment breakdown."
+    columns:
+      - name: username
+        description: "The Twitter username."
+        tests:
+          - not_null
+          - unique
+      - name: total_tweets
+        description: "Total number of tweets by this user in the dataset."
+      - name: positive_pct
+        description: "Percentage of this user's tweets that were positive."

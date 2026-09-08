@@ -31,3 +31,8 @@ terraform/.snowflake_keys/
 # Airflow runtime logs (generated automatically, keep folder structure only)
 airflow/logs/*
 !airflow/logs/.gitkeep
+
+# dbt
+dbt_project/target/
+dbt_project/logs/
+dbt_project/dbt_packages/

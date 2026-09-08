@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: raw
+    database: SPARK_PIPELINE_DB
+    schema: PUBLIC
+    tables:
+      - name: tweets_clean
+        identifier: TWEETS_CLEAN
